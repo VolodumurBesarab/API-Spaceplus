@@ -118,7 +118,7 @@ class StartProgram:
                 print(created_link)
 
 
-        # woocommerce спроба підключення
+
 
         # from urllib.parse import urlencode
         #
@@ -143,9 +143,7 @@ class StartProgram:
         #
         # print("%s%s?%s" % (store_url, endpoint, query_string))
 
-    # Приклад запиту для перевірки підключення
-
-
+    # woocommerce підключення
     def check_connection(self):
         Woocommerceendpoint = 'products'
         response = requests.get(
@@ -157,6 +155,7 @@ class StartProgram:
         else:
             print('Підключення не вдалось. Перевірте ключі та URL.')
 
+    #import товару до вукомерс
     def import_product(self, product_data):
         Woocommerceendpoint = 'products'
         response = requests.post(
@@ -166,17 +165,24 @@ class StartProgram:
         )
         return response.json()
 
-    # # Приклад виклику функції для імпорту товару
-    # if __name__ == '__main__':
-    #     new_product_data = {
-    #         "name": "Новий товар",
-    #         "type": "simple",
-    #         "regular_price": "10.00",
-    #         "description": "Це новий товар",
-    #         "short_description": "Новий товар для тестування",
-    #         "categories": [{"id": 1}],
-    #         "images": [{"src": "https://static4.winylownia.pl/pol_pl_PLACEBO-Placebo-LP-60305_1.jpg"}]
-    #     }
+    # #Delate product from Woocommerce
+    # product_id_to_delete = 921  # Замініть на реальний ID товару
     #
-    #     response = import_product(new_product_data)
-    #     print('Відповідь API:', response)
+    # def delete_product(api_url, consumer_key, consumer_secret, product_id):
+    #     endpoint = f"products/{product_id}"
+    #     url = f"{api_url}{endpoint}"
+    #
+    #     auth = (consumer_key, consumer_secret)
+    #     response = requests.delete(url, auth=auth)
+    #
+    #     return response
+    #
+    #
+    # response = delete_product(WC_URL, CONSUMER_KEY_WC, CONSUMER_SECRET_WC, product_id_to_delete)
+    # if response.status_code == 200:
+    #     print("Товар успішно видалено.")
+    # else:
+    #     print("Помилка під час видалення товару. Код відповіді:", response.status_code)
+    #     print(response.text)
+
+    #connect to otomoto api

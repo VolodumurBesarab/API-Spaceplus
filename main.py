@@ -9,10 +9,10 @@ start_program.check_connection()
 # Видаліть наступний рядок, оскільки ви вже імпортували клас StartProgram
 # from start_program import import_product
 
-# Приклад виклику методу імпорту товару з екземпляра класу StartProgram
+# Іморт до вукомерс
 if __name__ == '__main__':
     new_product_data = {
-        "name": "Новий товар",
+        "name": "Новий товар 343",
         "type": "simple",
         "regular_price": "10.00",
         "description": "Це новий товар",
