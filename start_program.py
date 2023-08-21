@@ -4,6 +4,9 @@ from modules.auth_manager import AuthManager
 from modules.excel_handler import ExcelHandler
 from modules.onedrive_manager import OneDriveManager
 
+CONSUMER_KEY_WC = 'ck_0b8082bdc3a97be4a1e846593cc7a680b158109c'
+CONSUMER_SECRET_WC = 'cs_ab5acc886e4ef248439b1fe708756674b821f02b'
+WC_URL = 'https://spaceplus.com.pl/wp-json/wc/v3/'
 
 class StartProgram:
     def __init__(self):
@@ -114,3 +117,66 @@ class StartProgram:
                 created_link = create_link_response_json["link"]["webUrl"]
                 print(created_link)
 
+
+        # woocommerce спроба підключення
+
+        # from urllib.parse import urlencode
+        #
+        # params = {
+        #     "key_id": 1,
+        #     "user_id": 123,
+        #     "consumer_key": "ck_0b8082bdc3a97be4a1e846593cc7a680b158109c",
+        #     "consumer_secret": "cs_ab5acc886e4ef248439b1fe708756674b821f02b",
+        #     "key_permissions": "read_write"
+        # }
+        #
+        # store_url = 'https://spaceplus.com.pl'
+        # endpoint = '/wc-auth/v1/authorize'
+        # params = {
+        #     "app_name": "Api-Spaceplus",
+        #     "scope": "read_write",
+        #     "user_id": 123,
+        #     "return_url": "https://allegro.pl",
+        #     "callback_url": "https://allegro.pl/"
+        # }
+        # query_string = urlencode(params)
+        #
+        # print("%s%s?%s" % (store_url, endpoint, query_string))
+
+    # Приклад запиту для перевірки підключення
+
+
+    def check_connection(self):
+        Woocommerceendpoint = 'products'
+        response = requests.get(
+            f'{WC_URL}{Woocommerceendpoint}',
+            auth=(CONSUMER_KEY_WC, CONSUMER_SECRET_WC)
+        )
+        if response.status_code == 200:
+            print('Підключення до WooCommerce API успішне!')
+        else:
+            print('Підключення не вдалось. Перевірте ключі та URL.')
+
+    def import_product(self, product_data):
+        Woocommerceendpoint = 'products'
+        response = requests.post(
+            f'{WC_URL}{Woocommerceendpoint}',
+            auth=(CONSUMER_KEY_WC, CONSUMER_SECRET_WC),
+            json=product_data
+        )
+        return response.json()
+
+    # # Приклад виклику функції для імпорту товару
+    # if __name__ == '__main__':
+    #     new_product_data = {
+    #         "name": "Новий товар",
+    #         "type": "simple",
+    #         "regular_price": "10.00",
+    #         "description": "Це новий товар",
+    #         "short_description": "Новий товар для тестування",
+    #         "categories": [{"id": 1}],
+    #         "images": [{"src": "https://static4.winylownia.pl/pol_pl_PLACEBO-Placebo-LP-60305_1.jpg"}]
+    #     }
+    #
+    #     response = import_product(new_product_data)
+    #     print('Відповідь API:', response)
