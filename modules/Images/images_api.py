@@ -10,7 +10,7 @@ class ImagesApi:
     # завантаження фото з onedrive
 
     # Шлях до фото на вашому локальному комп'ютері
-    image_path = 'C:\\Users\\vladi\\OneDrive\\Desktop\\IMG-8277.jpg'
+    image_path = 'C:\\Users\\vladi\\OneDrive\\Desktop\\1.jpg'
 
     # Функція для завантаження фото на Imgur і отримання URL
     def upload_image_to_imgur(image_path):
