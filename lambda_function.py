@@ -1,6 +1,7 @@
 import json
 
 from modules.otomoto.otomoto_manager import OtomotoManager
+from modules.src_image_url_creator import SrcImageUrlCreator
 from modules.woocommerce.woocommerce_manager import WoocommerceManager
 
 
@@ -17,6 +18,10 @@ def lambda_handler(event, context):
     #     Payload='{}',
     # )
     # print(response)
+
+    # src_image_url_creator = SrcImageUrlCreator()
+    # src_image_url_creator.generate_links()
+
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
