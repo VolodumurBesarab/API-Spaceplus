@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
 
+import pandas as pd
 import requests
+from pandas import DataFrame
 
 from modules.auth_manager import AuthManager
 
@@ -46,6 +48,18 @@ class OneDriveManager:
         else:
             print(f"Сталася помилка при завантаженні файлу на OneDrive!. {response.text}")
         return response
+
+    def upload_list_to_onedrive(self, uploaded_list: list[DataFrame], uploaded_list_path: str):
+        column_name = "номер на складі"
+        uploaded_list_values = []
+
+        if uploaded_list:
+            for df_check in uploaded_list:
+                uploaded_list_values.append(df_check[column_name])
+
+        df_uploaded_list_values = pd.DataFrame({column_name: uploaded_list_values})
+        df_uploaded_list_values.to_csv(uploaded_list_path, index=False)
+        self.upload_file_to_onedrive(file_path=uploaded_list_path, path_after_current_day="Lists")
 
     def download_basic_reports_to_tmp(self):
         folder_path = "/tmp/text_reports"

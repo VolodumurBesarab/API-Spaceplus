@@ -111,7 +111,7 @@ class WoocommerceManager:
             try:
                 parts_category = PARTS_CATEGORY_DICT_WOOCOMMERCE[str(row.get("type")).strip()]
             except Exception as e:
-                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get("type")).strip()} in dictionary. {e}")
+                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('type')).strip()} in dictionary. {e}")
                 break
 
             manufacturer = row.get("manufacturer")
@@ -149,7 +149,7 @@ class WoocommerceManager:
             try:
                 shipping = SHIPPING_DICT_WOOCOMMERCE[str(row.get("delivery")).strip()]
             except Exception as e:
-                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get("delivery")).strip()} in dictionary. {e}")
+                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('delivery')).strip()} in dictionary. {e}")
                 break
 
             advert_dict = {
@@ -177,7 +177,7 @@ class WoocommerceManager:
 
             client = boto3.client('lambda')
             response = client.invoke(
-                FunctionName='prod-spaceplus-create-advert',
+                FunctionName='create-advert-woocommerce',
                 InvocationType='Event',
                 Payload=advert_json,
             )

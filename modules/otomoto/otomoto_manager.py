@@ -197,19 +197,6 @@ class OtomotoManager:
             working_data_table = pd.read_excel(file_path, nrows=rows_to_read)
         return working_data_table
 
-    def upload_list_to_onedrive(self, uploaded_list: list[DataFrame], uploaded_list_path: str):
-        column_name = "номер на складі"
-        uploaded_list_values = []
-
-        if uploaded_list:
-            for df_check in uploaded_list:
-                uploaded_list_values.append(df_check[column_name])
-
-        df_uploaded_list_values = pd.DataFrame({column_name: uploaded_list_values})
-        df_uploaded_list_values.to_csv(uploaded_list_path, index=False)
-        self.one_drive_manager.upload_file_to_onedrive(file_path=uploaded_list_path,
-                                                       path_after_current_day="Lists")
-
     def find_current_line_in_json(self, json_file_path, current_line: str):
         try:
             with open(json_file_path, 'r') as json_file:
@@ -292,9 +279,9 @@ class OtomotoManager:
             invalid_quantity_path = "/tmp/invalid_quantity_otomoto.txt"
             list_need_to_delete_path = "/tmp/list_need_to_delete_otomoto.txt"
 
-            self.upload_list_to_onedrive(uploaded_list=list_ready_to_create, uploaded_list_path=ready_to_create_path)
-            self.upload_list_to_onedrive(uploaded_list=invalid_quantity, uploaded_list_path=invalid_quantity_path)
-            self.upload_list_to_onedrive(uploaded_list=list_need_to_delete, uploaded_list_path=list_need_to_delete_path)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_ready_to_create, uploaded_list_path=ready_to_create_path)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity, uploaded_list_path=invalid_quantity_path)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete, uploaded_list_path=list_need_to_delete_path)
         else:
             self.one_drive_manager.download_file_to_tmp(
                 path=f"/Holland/reports/{self.one_drive_manager.current_day}/Lists/ready_to_create.txt",

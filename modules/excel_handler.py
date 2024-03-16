@@ -58,7 +58,8 @@ class ExcelHandler:
 
     def get_exel_file(self, name: str):
         file_content = None
-        if os.path.exists(self.get_file_path(name)):
+        print(os.path.exists(self.get_file_path(name)))
+        if not os.path.exists(self.get_file_path(name)):
             one_drive_url = self.endpoint + "drive/root:/Holland/" + name
             exel_file = self.onedrive_manager.get_root_folder_json(one_drive_url=one_drive_url,
                                                                    headers=self.headers)
@@ -73,9 +74,9 @@ class ExcelHandler:
 
                     print("excel file download successful")
                     self.reports_generator.create_general_report(message="excel file download successful")
+                else:
+                    print("excel file not download")
         return file_content
-
-
 
     def create_file_on_data(self, file_content, file_name):
         save_path = self.get_file_path(file_name=file_name)

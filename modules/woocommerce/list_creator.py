@@ -46,6 +46,9 @@ class ListCreator:
             path=f"/Holland/reports/{self.one_drive_manager.get_current_day()}/{ADVERTS_DICT_JSON}",
             file_name=ADVERTS_DICT_JSON)
 
+        if not os.path.exists(ADVERTS_DICT_JSON_PATH):
+            with open(ADVERTS_DICT_JSON_PATH, 'w') as json_file:
+                json.dump({}, json_file)
         with open(ADVERTS_DICT_JSON_PATH, 'r') as json_file:
             adverts_dict: dict = json.load(json_file)
 
@@ -89,21 +92,21 @@ class ListCreator:
         return df1
 
     def create_lists(self, df: DataFrame):
-        in_stock, out_of_stock, invalid_quantity = self.create_lists_of_produts(df1=df1)
-        list_need_to_delete = self.create_list_need_to_delete(out_of_stock=out_of_stock, whole_table=df1)
+        in_stock, out_of_stock, invalid_quantity = self.create_lists_of_produts(df1=df)
+        list_need_to_delete = self.create_list_need_to_delete(out_of_stock=out_of_stock, whole_table=df)
         list_check_need_to_edit, list_ready_to_create = self.create_list_need_to_create(in_stock=in_stock)
 
         ready_to_create_path = "/tmp/ready_to_create_otomoto.txt"
         invalid_quantity_path = "/tmp/invalid_quantity_otomoto.txt"
         list_need_to_delete_path = "/tmp/list_need_to_delete_otomoto.txt"
 
-        self.one_drive_manager.upload_file_to_onedrive(path_after_current_day="Lists", file_path=ready_to_create_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=in_stock, uploaded_list_path=ready_to_create_path)
         self.reports_generator.create_general_report(message=f"{ready_to_create_path} created successfully")
 
-        self.one_drive_manager.upload_file_to_onedrive(path_after_current_day="Lists", file_path=invalid_quantity_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity, uploaded_list_path=invalid_quantity_path)
         self.reports_generator.create_general_report(message=f"{invalid_quantity_path} created successfully")
 
-        self.one_drive_manager.upload_file_to_onedrive(path_after_current_day="Lists", file_path=list_need_to_delete_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete, uploaded_list_path=list_need_to_delete_path)
         self.reports_generator.create_general_report(message=f"{list_need_to_delete_path} created successfully")
 
 # list_creator = ListCreator()
