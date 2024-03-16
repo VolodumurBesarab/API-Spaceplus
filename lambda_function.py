@@ -6,8 +6,8 @@ from modules.woocommerce.woocommerce_manager import WoocommerceManager
 
 
 def lambda_handler(event, context):
-    otomoto_manager = OtomotoManager(excel_file_name=r"otomoto.xlsx", sheet_name="otomoto")
-    otomoto_manager.create_all_adverts()
+    # otomoto_manager = OtomotoManager(excel_file_name=r"otomoto.xlsx", sheet_name="otomoto")
+    # otomoto_manager.create_all_adverts()
 
     woocommerce_manager = WoocommerceManager()
     woocommerce_manager.create_all_adverts()

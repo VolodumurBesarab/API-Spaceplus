@@ -10,7 +10,8 @@ from modules.onedrive_manager import OneDriveManager
 from modules.otomoto.otomoto_manager import OtomotoManager
 from modules.reports.reports_generator import ReportsGenerator
 
-EXCEL_FILE_NAME = r"otomoto.xlsx"
+# EXCEL_FILE_NAME = r"otomoto.xlsx"
+EXCEL_FILE_NAME = r"spaceplus_testing.xlsx"
 SHEET_NAME = "Spaceplus"
 ADVERTS_DICT_JSON = "adverts_dict_woocommerce.json"
 ADVERTS_DICT_JSON_PATH = "/tmp/adverts_dict_woocommerce.json"
