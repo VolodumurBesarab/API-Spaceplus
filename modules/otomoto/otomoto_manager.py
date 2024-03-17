@@ -278,10 +278,17 @@ class OtomotoManager:
             ready_to_create_path = "/tmp/ready_to_create_otomoto.txt"
             invalid_quantity_path = "/tmp/invalid_quantity_otomoto.txt"
             list_need_to_delete_path = "/tmp/list_need_to_delete_otomoto.txt"
+            column_name = "номер на складі"
 
-            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_ready_to_create, uploaded_list_path=ready_to_create_path)
-            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity, uploaded_list_path=invalid_quantity_path)
-            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete, uploaded_list_path=list_need_to_delete_path)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_ready_to_create,
+                                                           uploaded_list_path=ready_to_create_path,
+                                                           column_name=column_name)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity,
+                                                           uploaded_list_path=invalid_quantity_path,
+                                                           column_name=column_name)
+            self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete,
+                                                           uploaded_list_path=list_need_to_delete_path,
+                                                           column_name=column_name)
         else:
             self.one_drive_manager.download_file_to_tmp(
                 path=f"/Holland/reports/{self.one_drive_manager.current_day}/Lists/ready_to_create.txt",

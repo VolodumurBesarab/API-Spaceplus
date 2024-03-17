@@ -61,7 +61,7 @@ class ListCreator:
                 list_need_to_delete.append(item)
         return list_need_to_delete
 
-    def create_list_need_to_create(self, in_stock: list[DataFrame]) -> tuple[list[DataFrame], list[DataFrame]]:
+    def create_list_ready_to_create(self, in_stock: list[DataFrame]) -> tuple[list[DataFrame], list[DataFrame]]:
         list_check_need_to_edit = []
         list_ready_to_create = []
         with open(ADVERTS_DICT_JSON_PATH, 'r') as json_file:
@@ -94,19 +94,26 @@ class ListCreator:
     def create_lists(self, df: DataFrame):
         in_stock, out_of_stock, invalid_quantity = self.create_lists_of_produts(df1=df)
         list_need_to_delete = self.create_list_need_to_delete(out_of_stock=out_of_stock, whole_table=df)
-        list_check_need_to_edit, list_ready_to_create = self.create_list_need_to_create(in_stock=in_stock)
+        list_check_need_to_edit, list_ready_to_create = self.create_list_ready_to_create(in_stock=in_stock)
 
         ready_to_create_path = "/tmp/ready_to_create_otomoto.txt"
         invalid_quantity_path = "/tmp/invalid_quantity_otomoto.txt"
         list_need_to_delete_path = "/tmp/list_need_to_delete_otomoto.txt"
+        column_name = "stock number"
 
-        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=in_stock, uploaded_list_path=ready_to_create_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_ready_to_create,
+                                                       uploaded_list_path=ready_to_create_path,
+                                                       column_name=column_name)
         self.reports_generator.create_general_report(message=f"{ready_to_create_path} created successfully")
 
-        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity, uploaded_list_path=invalid_quantity_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=invalid_quantity,
+                                                       uploaded_list_path=invalid_quantity_path,
+                                                       column_name=column_name)
         self.reports_generator.create_general_report(message=f"{invalid_quantity_path} created successfully")
 
-        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete, uploaded_list_path=list_need_to_delete_path)
+        self.one_drive_manager.upload_list_to_onedrive(uploaded_list=list_need_to_delete,
+                                                       uploaded_list_path=list_need_to_delete_path,
+                                                       column_name=column_name)
         self.reports_generator.create_general_report(message=f"{list_need_to_delete_path} created successfully")
 
 # list_creator = ListCreator()

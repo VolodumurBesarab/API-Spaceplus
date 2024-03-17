@@ -8,7 +8,6 @@ import math
 from requests import Response
 
 from modules.reports.reports_generator import ReportsGenerator
-from modules.images.images_api import ImagesApi
 from modules.images.s3_link_generator import S3LinkGenerator
 from modules.auth_manager import AuthManager
 from modules.one_drive_photo_manager import OneDrivePhotoManager

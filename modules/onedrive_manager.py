@@ -49,8 +49,7 @@ class OneDriveManager:
             print(f"Сталася помилка при завантаженні файлу на OneDrive!. {response.text}")
         return response
 
-    def upload_list_to_onedrive(self, uploaded_list: list[DataFrame], uploaded_list_path: str):
-        column_name = "номер на складі"
+    def upload_list_to_onedrive(self, uploaded_list: list[DataFrame], uploaded_list_path: str, column_name: str):
         uploaded_list_values = []
 
         if uploaded_list:

@@ -29,9 +29,11 @@ PARTS_CATEGORY_DICT_WOOCOMMERCE = {
                        "Uchwyty rowerowe, Uchwyty rowerowe > Na klapę": "for-trunk-lid"
                        }
 
-SHIPPING_DICT_WOOCOMMERCE = {
-                       }
-
+SHIPPING_DICT_WOOCOMMERCE = {"1": "small",
+                             "2": "middle",
+                             "3": "boxsmall",
+                             "4": "boxbig"
+                             }
 class WoocommerceManager:
     def __init__(self):
         self.one_drive_photo_manager = OneDrivePhotoManager()
@@ -56,13 +58,13 @@ class WoocommerceManager:
 
         response = requests.get(url=url, auth=auth)
         if response.status_code == 200:
-            woocommerce_data_base = self.create_database_in_onedrive(response=response)
+            woocommerce_data_base = self.create_woocommerce_database_in_onedrive(response=response)
         else:
             print('Підключення не вдалось. Перевірте ключі та URL.')
 
         return woocommerce_data_base
 
-    def create_database_in_onedrive(self, response: Response):
+    def create_woocommerce_database_in_onedrive(self, response: Response):
         adverts_data = response.json()
         adverts = {}
         for advert in adverts_data:
@@ -109,9 +111,9 @@ class WoocommerceManager:
             product_id = str(row.get("stock number"))
             # update list
             try:
-                parts_category = PARTS_CATEGORY_DICT_WOOCOMMERCE[str(row.get("type")).strip()]
+                parts_category = PARTS_CATEGORY_DICT_WOOCOMMERCE[str(row.get("category")).strip()]
             except Exception as e:
-                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('type')).strip()} in dictionary. {e}")
+                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('category')).strip()} in dictionary. {e}")
                 break
 
             manufacturer = row.get("manufacturer")
@@ -162,6 +164,7 @@ class WoocommerceManager:
                 "parts-category": parts_category,
                 "images": images,
                 "shipping": shipping
+            }
 
                 # "product_id": 51111_1,
                 # "title" : "New product 4",
@@ -172,30 +175,27 @@ class WoocommerceManager:
                 # "parts_category": [{"id": 51}, {"id": 61}],
                 # "images" : None,
                 # "shipping" : ("small", 55),
-                }
             advert_json = json.dumps(advert_dict)
-
+            print(advert_json)
             client = boto3.client('lambda')
             response = client.invoke(
                 FunctionName='create-advert-woocommerce',
                 InvocationType='Event',
                 Payload=advert_json,
             )
-            print(response["StatusCode"], row.get("номер на складі"))
-            self.reports_generator.create_general_report(message=f"{response['StatusCode'], row.get('номер на складі')}")
+            print(response["StatusCode"], row.get("stock number"))
+            self.reports_generator.create_general_report(message=f"{response['StatusCode'], row.get('stock number')}")
         pass
 
     def create_all_adverts(self):
         df1 = self.list_creator.get_excel()
+        self.get_database()
         self.list_creator.create_lists(df=df1)
         all_adverts_from_ready_to_create: DataFrame = self.create_df_from_ready_to_create(df=df1)
         self.reports_generator.create_general_report(
             message=f"adverts to create: {len(all_adverts_from_ready_to_create)}")
 
         self.post_adverts(list_ready_to_create=all_adverts_from_ready_to_create)
-        pass
-
-
 
 # woocommerce_manager = WoocommerceManager()
 # data_base = woocommerce_manager.get_database()
