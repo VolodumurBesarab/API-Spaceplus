@@ -18,22 +18,24 @@ from modules.woocommerce.list_creator import ListCreator
 
 load_dotenv()
 
-PARTS_CATEGORY_DICT_WOOCOMMERCE = {
-                       "Bagażniki dachowe > Bez relingów": "without-roof-rails",
-                       "Bagażniki dachowe > Na relingi": "for-roof-rails",
-                       "Boksy dachowe": "roof-boxes",
-                       "Części i akcesoria": "car-equipment-and-accessories-other",
-                       "Uchwyty na narty i snowboardy": "ski-handles",
-                       "Uchwyty rowerowe, Uchwyty rowerowe > Na dach": "for-the-roof",
-                       "Uchwyty rowerowe, Uchwyty rowerowe > Na hak": "for-tow-hook",
-                       "Uchwyty rowerowe, Uchwyty rowerowe > Na klapę": "for-trunk-lid"
-                       }
+# PARTS_CATEGORY_DICT_WOOCOMMERCE = {
+#                        "Bagażniki dachowe > Bez relingów": "without-roof-rails",
+#                        "Bagażniki dachowe > Na relingi": "for-roof-rails",
+#                        "Boksy dachowe": "roof-boxes",
+#                        "Części i akcesoria": "car-equipment-and-accessories-other",
+#                        "Uchwyty na narty i snowboardy": "ski-handles",
+#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na dach": "for-the-roof",
+#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na hak": "for-tow-hook",
+#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na klapę": "for-trunk-lid"
+#                        }
+#
+# SHIPPING_DICT_WOOCOMMERCE = {"1": "small",
+#                              "2": "middle",
+#                              "3": "boxsmall",
+#                              "4": "boxbig"
+#                              }
 
-SHIPPING_DICT_WOOCOMMERCE = {"1": "small",
-                             "2": "middle",
-                             "3": "boxsmall",
-                             "4": "boxbig"
-                             }
+
 class WoocommerceManager:
     def __init__(self):
         self.one_drive_photo_manager = OneDrivePhotoManager()
@@ -41,14 +43,13 @@ class WoocommerceManager:
         self.one_drive_manager = OneDriveManager()
         self.list_creator = ListCreator()
         try:
-            self.CONSUMER_KEY_WC = os.getenv("CONSUMER_KEY_WC")
-            self.CONSUMER_SECRET_WC = os.getenv("CONSUMER_SECRET_WC")
-            self.WC_URL = os.getenv("WC_URL")
+            self.CONSUMER_KEY_WC = os.environ["CONSUMER_KEY_WC"]
+            self.CONSUMER_SECRET_WC = os.environ["CONSUMER_SECRET_WC"]
+            self.WC_URL = os.environ["WC_URL"]
         except:
             self.CONSUMER_KEY_WC = os.getenv("CONSUMER_KEY_WC")
             self.CONSUMER_SECRET_WC = os.getenv("CONSUMER_SECRET_WC")
             self.WC_URL = os.getenv("WC_URL")
-            print("add env to lambda")
 
     def get_database(self):
         woocommerce_endpoint = 'products'
@@ -110,18 +111,18 @@ class WoocommerceManager:
         for index, row in list_ready_to_create.iterrows():
             product_id = str(row.get("stock number"))
             # update list
-            try:
-                parts_category = PARTS_CATEGORY_DICT_WOOCOMMERCE[str(row.get("category")).strip()]
-            except Exception as e:
-                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('category')).strip()} in dictionary. {e}")
-                break
+            # try:
+            #     parts_category = PARTS_CATEGORY_DICT_WOOCOMMERCE[str(row.get("category")).strip()]
+            # except Exception as e:
+            #     self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('category')).strip()} in dictionary. {e}")
+            #     break
 
             manufacturer = row.get("manufacturer")
-            if manufacturer is None or math.isnan(manufacturer):
-                manufacturer = "oryginalny"
+            if manufacturer is None or math.isnan(manufacturer) or manufacturer == 0:
+                manufacturer = "Oryginalny"
 
-            description = f"|{product_id}| " + str(row.get("description"))
-
+            description = str(row.get("description"))
+            price = f"{int(row.get("price")):.2f}"
             # manufacturer_id = row.get("manufacturer_id")
             # if isinstance(manufacturer_id, (int, float)):
             #     manufacturer_code = None
@@ -148,22 +149,22 @@ class WoocommerceManager:
 
             images = s3_link_generator.convert_urls_to_woocommerce_format(urls=photos_url_list)
 
-            try:
-                shipping = SHIPPING_DICT_WOOCOMMERCE[str(row.get("delivery")).strip()]
-            except Exception as e:
-                self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('delivery')).strip()} in dictionary. {e}")
-                break
+            # try:
+            #     shipping = SHIPPING_DICT_WOOCOMMERCE[str(row.get("delivery")).strip()]
+            # except Exception as e:
+            #     self.reports_generator.create_general_report(f"{row.get('stock number')} Cant find {str(row.get('delivery')).strip()} in dictionary. {e}")
+            #     break
 
             advert_dict = {
                 "product_id": product_id,
                 "title": row.get("title"),
                 "description": description,
-                "price": row.get("price"),
+                "price": price,
                 "new_used": row.get("new_used"),
                 "manufacturer": manufacturer,
-                "parts-category": parts_category,
+                "parts-category": str(row.get("category")).strip(),
                 "images": images,
-                "shipping": shipping
+                "shipping": str(row.get("delivery")).strip()
             }
 
                 # "product_id": 51111_1,
