@@ -18,16 +18,16 @@ from modules.woocommerce.list_creator import ListCreator
 
 load_dotenv()
 
-# PARTS_CATEGORY_DICT_WOOCOMMERCE = {
-#                        "Bagażniki dachowe > Bez relingów": "without-roof-rails",
-#                        "Bagażniki dachowe > Na relingi": "for-roof-rails",
-#                        "Boksy dachowe": "roof-boxes",
-#                        "Części i akcesoria": "car-equipment-and-accessories-other",
-#                        "Uchwyty na narty i snowboardy": "ski-handles",
-#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na dach": "for-the-roof",
-#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na hak": "for-tow-hook",
-#                        "Uchwyty rowerowe, Uchwyty rowerowe > Na klapę": "for-trunk-lid"
-#                        }
+PARTS_CATEGORY_DICT_WOOCOMMERCE = {"Bagażniki dachowe > Bez relingów": [{"id": 51}, {"id": 60}],
+                       "Bagażniki dachowe > Na relingi": [{"id": 51}, {"id": 61}],
+                       "Boksy dachowe": [{"id": 51}, {"id": 48}],
+                       "Części i akcesoria": [{"id": 51}, {"id": 54}],
+                       "Uchwyty na narty i snowboardy": [{"id": 51}, {"id": 50}],
+                       "Uchwyty rowerowe, Uchwyty rowerowe > Na dach": [{"id": 49}, {"id": 52}],
+                       "Uchwyty rowerowe, Uchwyty rowerowe > Na hak": [{"id": 49}, {"id": 53}],
+                       "Uchwyty rowerowe, Uchwyty rowerowe > Na klapę": [{"id": 49}, {"id": 59}]
+                       }
+
 #
 # SHIPPING_DICT_WOOCOMMERCE = {"1": "small",
 #                              "2": "middle",
@@ -121,8 +121,8 @@ class WoocommerceManager:
             if manufacturer is None or math.isnan(manufacturer) or manufacturer == 0:
                 manufacturer = "Oryginalny"
 
-            description = str(row.get("description"))
-            price = f"{int(row.get("price")):.2f}"
+            description = f"|{product_id}| {str(row.get('description'))}"
+            price = f"{int(row.get('price')):.2f}"
             # manufacturer_id = row.get("manufacturer_id")
             # if isinstance(manufacturer_id, (int, float)):
             #     manufacturer_code = None
@@ -162,7 +162,7 @@ class WoocommerceManager:
                 "price": price,
                 "new_used": row.get("new_used"),
                 "manufacturer": manufacturer,
-                "parts-category": str(row.get("category")).strip(),
+                "parts_category": str(row.get("category")).strip(),
                 "images": images,
                 "shipping": str(row.get("delivery")).strip()
             }
@@ -177,7 +177,7 @@ class WoocommerceManager:
                 # "images" : None,
                 # "shipping" : ("small", 55),
             advert_json = json.dumps(advert_dict)
-            print(advert_json)
+            self.reports_generator.create_general_report(message=str(advert_json))
             client = boto3.client('lambda')
             response = client.invoke(
                 FunctionName='create-advert-woocommerce',
