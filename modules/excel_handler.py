@@ -19,6 +19,8 @@ class ExcelHandler:
         self.access_token = self.auth_manager.get_access_token_default_scopes()
         self.one_drive_url = self.endpoint + "drive/root/children"
         self.headers = self.auth_manager.get_default_header(access_token=self.access_token)
+        self.file_content = None
+
 
     def read_excel(self, file_content, sheet_name):
         df = pd.read_excel(file_content, sheet_name=sheet_name)
@@ -57,7 +59,6 @@ class ExcelHandler:
         return save_path
 
     def get_exel_file(self, name: str):
-        file_content = None
         print(os.path.exists(self.get_file_path(name)))
         if not os.path.exists(self.get_file_path(name)):
             one_drive_url = self.endpoint + "drive/root:/Holland/" + name
@@ -70,13 +71,13 @@ class ExcelHandler:
                 response = requests.get(url=file_url)
 
                 if response.status_code == 200:
-                    file_content = response.content
+                    self.file_content = response.content
 
                     print("excel file download successful")
                     self.reports_generator.create_general_report(message="excel file download successful")
                 else:
                     print("excel file not download")
-        return file_content
+        return self.file_content
 
     def create_file_on_data(self, file_content, file_name):
         save_path = self.get_file_path(file_name=file_name)

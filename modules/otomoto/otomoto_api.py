@@ -20,7 +20,6 @@ class OtomotoApi:
         self.reports_generator = ReportsGenerator()
         self.access_token = None
         self.base_url = "https://www.otomoto.pl/api/open/"
-        self.images_api = ImagesApi()
         self.one_drive_photo_manager = OneDrivePhotoManager()
         self.one_drive_manager = OneDriveManager()
 
