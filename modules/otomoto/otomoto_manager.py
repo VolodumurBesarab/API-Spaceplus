@@ -165,7 +165,7 @@ class OtomotoManager:
     def create_list_need_to_create(self, in_stock: list[DataFrame]) -> tuple[list[DataFrame], list[DataFrame]]:
         list_check_need_to_edit = []
         list_ready_to_create = []
-        with open('/tmp/adverts_dict.json', 'r') as json_file:
+        with open('/tmp/adverts_dict_otomoto.json', 'r') as json_file:
             adverts_dict: dict = json.load(json_file)
 
         for item in in_stock:
@@ -178,7 +178,7 @@ class OtomotoManager:
 
     def create_list_need_to_delete(self, out_of_stock: list[DataFrame], whole_table: DataFrame) -> list[DataFrame]:
         list_need_to_delete = []
-        with open('/tmp/adverts_dict.json', 'r') as json_file:
+        with open('/tmp/adverts_dict_otomoto.json', 'r') as json_file:
             adverts_dict: dict = json.load(json_file)
 
         for item in out_of_stock:
@@ -233,7 +233,7 @@ class OtomotoManager:
 
         for line in lines:
             current_line = line.strip()
-            otomoto_id = self.find_current_line_in_json(json_file_path="/tmp/adverts_dict.json",
+            otomoto_id = self.find_current_line_in_json(json_file_path="/tmp/adverts_dict_otomoto.json",
                                                         current_line=current_line)
             response = self.otomoto_api.delete_advert(in_stock_id=current_line, otomoto_id=otomoto_id)
             print(f"{response.status_code} : {current_line}")
@@ -297,8 +297,8 @@ class OtomotoManager:
                 path=f"/Holland/reports/{self.one_drive_manager.get_current_day()}/Lists/list_need_to_delete.txt",
                 file_name="list_need_to_delete.txt")
             self.one_drive_manager.download_file_to_tmp(
-                path=f"/Holland/reports/{self.one_drive_manager.current_day}/adverts_dict.json",
-                file_name="adverts_dict.json")
+                path=f"/Holland/reports/{self.one_drive_manager.current_day}//tmp/adverts_dict_otomoto.json",
+                file_name="/tmp/adverts_dict_otomoto.json")
 
     def create_df_from_ready_to_create(self, df: DataFrame, adverts_create_in_one_time=20) -> DataFrame:
         with open('/tmp/ready_to_create.txt', 'r') as file:

@@ -336,7 +336,7 @@ class OtomotoApi:
         print(url)
         response = requests.delete(url=url, headers=self.get_basic_headers(self.get_token()))
         if response.status_code == 204:
-            json_file_path = "/tmp/adverts_dict.json"
+            json_file_path = "/tmp/adverts_dict_otomoto.json"
             self.delete_and_save_in_json(json_file_path=json_file_path, key_to_delete=in_stock_id)
         return response
 
